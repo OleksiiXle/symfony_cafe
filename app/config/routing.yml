@@ -1,3 +1,7 @@
+xle_cafe:
+    resource: "@XleCafeBundle/Resources/config/routing.yml"
+    prefix:   /cafe
+
 # These first lines load the all routes defined as @Route() annotations in any
 # controller defined inside the src/AppBundle/Controller/ directory. Controllers
 # are loaded recursively, so you can separate them into subdirectories.

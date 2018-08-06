@@ -1,0 +1,3 @@
+xle_cafe_homepage:
+    path:     /
+    defaults: { _controller: XleCafeBundle:Default:index }
