@@ -1,0 +1,20 @@
+SYMFONY_ENV=prod composer install --no-dev --optimize-autoloader
+composer update
+md dev
+Произведенные после установки операции
+создать каталоги
+/var/www/xle/items/google_cafes/var/cache/dev/
+/var/www/xle/items/google_cafes/var/sessions/dev
+доступ
+sudo chmod -R 777 /var/www/xle/items/cafe/var/cache/dev
+sudo chmod -R 777 /var/www/xle/items/cafe/var/logs
+sudo chmod -R 777 /var/www/xle/items/cafe/var/logs/dev
+sudo chmod -R 777 /var/www/xle/items/cafe/var/sessions/dev
+php bin/symfony_requirements
+doctrine:schema:create
+php bin/console doctrine:fixtures:load
+******************************************************************************
+  > loading AppBundle\DataFixtures\ORM\UserFixtures
+  > loading AppBundle\DataFixtures\ORM\TagFixtures
+  > loading AppBundle\DataFixtures\ORM\PostFixtures
+******************************************************************************
