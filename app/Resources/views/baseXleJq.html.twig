@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cafe test</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('build/css/app.css') }}">
+    {% endblock %}
+    <script src="{{ asset('build/js/jquery-3.3.1.min.js') }}"></script>
+
+    {% block javascripts %}{% endblock %}
+
+</head>
+<body>
+<div id="map"></div>
+{% block body %}{% endblock %}
+</body>
+</html>

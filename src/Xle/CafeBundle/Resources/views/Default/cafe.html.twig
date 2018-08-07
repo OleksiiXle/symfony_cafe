@@ -1,7 +1,7 @@
-{% extends 'baseXleGm.html.twig' %}
+{% extends 'baseCafe.html.twig' %}
 
         {% block javascripts %}
-            <script src="{{ asset('build/js/_cafe1.js') }}"></script>
+            <script src="{{ asset('build/js/cafe.js') }}"></script>
         {% endblock %}
 
 
@@ -9,21 +9,18 @@
     <div class="container-fluid content_block">
         <div class="row">
             <h1>welcome to Google Cafe!</h1>
-            <div class="col-md-3" style="background-color: aliceblue">
+            <div class="col-md-6" style="background-color: aliceblue">
                 <b>side left</b><br>
+                <input id="searchTextField" size="100"><br>
                 <h1>{{ coordinates }}</h1>
-
-                <form id="testForm" action="http://cafe/cafe/">
-                    <input id="coordinates" type="text" value="{{ coordinates }}"><br>
-                    <button class="btn btn-success" type="submit">submit</button>
-                </form>
                 <br>
                 <button class="btn btn-success"
                 onclick="
-                $('#info_test').html('jQuery is here');"
+                $('#info_test').html('jQuery is here');
+                searchByAdress();"
                 >test</button>
             </div>
-            <div class="col-md-9" style="background-color: lightgrey">
+            <div class="col-md-6" style="background-color: lightgrey">
                 <b>side right</b><br>
                 <div id="info_test"></div>
 
