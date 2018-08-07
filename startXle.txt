@@ -18,3 +18,9 @@ php bin/console doctrine:fixtures:load
   > loading AppBundle\DataFixtures\ORM\TagFixtures
   > loading AppBundle\DataFixtures\ORM\PostFixtures
 ******************************************************************************
+plases
+AIzaSyABFd1BDPunKd5KAm7lYGpEibNLcoqBMaU
+js
+AIzaSyC9V8gkH_vKTxFLJMyG9LCgpkObzeC1-Lk
+
+AIzaSyDEslqJBnUE7hzkb2N7ximFzmXsLMYQNMU
