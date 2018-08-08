@@ -1,38 +1,27 @@
-//-- обработка клика на кнопку открытия окна полной информации
-function choiceOperation(item) {
+//-- обработка клика на кнопку открытия окна редактирования
+function updateWindowOpen(item) {
    // console.log(item.dataset.action);
     if (item.dataset.action == 'to_open'){
         //*** - открыть окно редактирования
         //-- звкрыть все открытые окна
-        $(".infoWindow").empty().hide();
+        $(".updateWindow").html('').hide();
         //-- поменять все открытые шевроны на закрытые
-        var chevrones =  $(".choice_btn");
-        $(chevrones).each(function () {
-            item.dataset.action = 'to_open';
-            this.innerHTML = '<span class="glyphicon glyphicon-chevron-down"></span>';
-        });
+       // var chevrones =  $(".choice_btn");
+      //  $(chevrones).each(function () {
+      //      item.dataset.action = 'to_open';
+     //   });
         // console.log(chevrones);
         //-- поменять свой шеврон на открытый
         item.dataset.action = 'to_close';
-        item.innerHTML = '<span class="glyphicon glyphicon-chevron-up"></span>';
        // $("#infoWindow_" + item.dataset.cafe_id).show();
         getInfo(item.dataset.cafe_id);
-
-
     } else{
         //**** - закрыть окно редактирования
         //-- звкрыть все открытые окна
-        $(".infoWindow").empty().hide();
+        $(".updateWindow").html('').hide();
         //-- поменять свой шеврон на открытый
         item.dataset.action = 'to_open';
-        item.innerHTML = '<span class="glyphicon glyphicon-chevron-down"></span>';
     }
-
-
-
-
-
-
     /*
         if (item.dataset.action == 'to_close'){
         //-- закрыть окно редактирования
@@ -41,9 +30,28 @@ function choiceOperation(item) {
     } else{
     }
      */
-
 }
 
+//-- обработка клика на кнопку открытия окна редактирования
+function viewWindowOpen(item) {
+   // console.log(item.dataset.action);
+    // console.log(item.dataset.action);
+   // var buttons =  $(".view_btn");
+  //  $(buttons).each(function () {
+  //      item.dataset.action = 'to_open';
+  //  });
+//-- звкрыть все открытые окна
+    $(".infoWindow").html('').hide();
+    if (item.dataset.action == 'to_open'){
+        item.dataset.action = 'to_close';
+
+        getInfoView(item);
+    } else{
+        item.dataset.action = 'to_open';
+    }
+}
+
+//-- вывод формы редактирования в открывшееся окно
 function getInfo(cafe_id) {
     $.ajax({
         url: 'http://cafe/cafe/cmanager/' + cafe_id + '/info1',
@@ -51,8 +59,8 @@ function getInfo(cafe_id) {
        // dataType: 'json',
         success: function(response){
             //  console.log(response);
-              $("#infoWindow_" + cafe_id).show().html(response);
 
+              $("#updateWindow_" + cafe_id).show().html(response);
             /*
             if (response['status']){
                 var formExample = $("#formExample");
@@ -79,6 +87,39 @@ function getInfo(cafe_id) {
     });
 }
 
+//-- вывод данных в открывшееся окно просмотра
+function getInfoView(item) {
+  // $(".infoWindow").empty().hide();
+    $("#infoWindow_" + item.dataset.cafe_id).show();
+    $.ajax({
+        url: 'http://cafe/cafe/cmanager/' + item.dataset.cafe_id + '/info',
+        type: "POST",
+        dataType: 'json',
+        success: function(response){
+             // console.log(response);
+            if (response['status']){
+                var viewExample = $("#viewExample");
+                var newView = viewExample.clone(false).show();
+                $("#infoWindow_" + item.dataset.cafe_id).append(newView).show();
+                $("#id").html(response['data']['id']);
+                $("#google_place_id").html(response['data']['google_place_id']);
+                $("#title").html(response['data']['title']);
+                $("#address").html(response['data']['address']);
+                $("#raiting").html(response['data']['raiting']);
+                $("#review").html(response['data']['review']);
+                $("#status").html(response['data']['status']);
+                $("#latLng").html(response['data']['lat'] + ', ' + response['data']['lang']);
+            } else {
+                $("#infoWindow_" + item.dataset.cafe_id).html('Информация не найдена');
+            }
+        },
+        error: function (jqXHR, error, errorThrown) {
+            console.log( "error : " + error + " " +  errorThrown);
+            console.log(jqXHR);
+        }
+    });
+}
+
 function updateCafe() {
    // var fd = $("#xle_cafebundle_cafe").serialize();
     //var formData = $("#xle_cafebundle_cafe").serializeArray();
@@ -95,6 +136,15 @@ function updateCafe() {
         dataType: 'json',
         success: function(response){
             console.log(response);
+            //-- звкрыть все открытые окна
+            $(".infoWindow").empty().hide();
+            //-- поменять все открытые шевроны на закрытые
+            var chevrones =  $(".choice_btn");
+            $(chevrones).each(function () {
+                item.dataset.action = 'to_open';
+                this.innerHTML = '<span class="glyphicon glyphicon-chevron-down"></span>';
+            });
+
 
         },
         error: function (jqXHR, error, errorThrown) {
@@ -104,4 +154,33 @@ function updateCafe() {
     });
 
 
+}
+
+//-- удаление кафе
+function deleteCafe(item) {
+    if (confirm('Подтвердите удаление')){
+        alert('ok - ' + item.dataset.cafe_id);
+        $("#tr_" + item.dataset.cafe_id).remove();
+        /*
+            $("#infoWindow_" + item.dataset.cafe_id).show();
+    $.ajax({
+        url: 'http://cafe/cafe/cmanager/' + item.dataset.cafe_id + '/info',
+        type: "POST",
+        dataType: 'json',
+        success: function(response){
+            // console.log(response);
+            if (response['status']){
+            } else {
+                $("#infoWindow_" + item.dataset.cafe_id).html('Информация не найдена');
+            }
+        },
+        error: function (jqXHR, error, errorThrown) {
+            console.log( "error : " + error + " " +  errorThrown);
+            console.log(jqXHR);
+        }
+    });
+
+         */
+    }
+    // $(".infoWindow").empty().hide();
 }
