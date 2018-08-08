@@ -24,3 +24,16 @@ js
 AIzaSyC9V8gkH_vKTxFLJMyG9LCgpkObzeC1-Lk
 
 AIzaSyDEslqJBnUE7hzkb2N7ximFzmXsLMYQNMU
+
+
+table cafe
+  `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+  'google_place_id' VARCHAR( 255 )
+  `title` VARCHAR( 100 ) NOT NULL ,
+  'raiting' INT
+  `review` VARCHAR( 255 ) NOT NULL ,
+  `address` VARCHAR( 255 ) NOT NULL ,
+  `lat` FLOAT( 10, 6 ) NOT NULL ,
+  `lng` FLOAT( 10, 6 ) NOT NULL
+  'status'
+
