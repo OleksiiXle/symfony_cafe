@@ -1,0 +1,121 @@
+{% extends 'baseCafe.html.twig' %}
+
+        {% block javascripts %}
+            <script src="{{ asset('build/js/cafe.js') }}"></script>
+            <script src="{{ asset('build/js/cafeOperations.js') }}"></script>
+        {% endblock %}
+
+        {% block contentHeader %}
+            <b>Welcome to Google Cafe!</b>
+            <input id="searchTextField" size="100">
+            <button class="btn btn-success"
+                    onclick="
+                $('#info_test').html('jQuery is here');
+                searchByAdress();"
+            >Поиск по адресу</button>
+        {% endblock %}
+        {% block contentLeft %}
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1>Список кафе</h1>
+                        <table class="table-hover" style="width: 100%">
+                            <thead>
+                            <tr>
+                                <th>Название</th>
+                                <th>Рейтинг</th>
+                                <th>Статус</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for cafe in cafes %}
+                                <tr>
+                                    <td>{{ cafe.title }}</td>
+                                    <td>{{ cafe.raiting }}</td>
+                                    <td>{{ cafe.status }}</td>
+                                    <td>
+                                        <a href="#"
+                                           id="choice_{{ cafe.id }}"
+                                           class="choice_btn"
+                                           title="Подробно"
+                                           data-action='to_open'
+                                           data-cafe_id = {{ cafe.id }}
+                                           onclick="choiceOperation(this);"
+                                        >
+                                            <span class="glyphicon glyphicon-chevron-down"></span>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">
+                                        <div id="infoWindow_{{ cafe.id }}" class="infoWindow" style="display: none">
+                                            <b>Infowindow</b>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <div id="formExample" style="display: none">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="field-name">Название - <span id="title" class="field-value"></span> </div>
+                                    <div class="field-name">Идентификатор - <span id="id" class="field-value"></span> </div>
+                                    <div class="field-name">Идентификатор Google - <span id="google_place_id" class="field-value"></span> </div>
+                                    <div class="field-name">Адрес - <span id="address" class="field-value"></span> </div>
+                                    <div class="field-name">Координаты - <span id="latLng" class="field-value"></span> </div>
+                                    <br>
+                                    <form name="xle_cafebundle_cafe" id="xle_cafebundle_cafe" method="post">
+                                        <div class="form-group" id="cafe-modify-form">
+                                            <label class="control-label" for="xle_cafebundle_cafe_id" >Id</label>
+                                            <input type="text" id="xle_cafebundle_cafe_id"
+                                                   name="xle_cafebundle_cafe[id]"
+                                                   class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label" for="xle_cafebundle_cafe_raiting" >Рейтинг</label>
+                                            <input type="text" id="xle_cafebundle_cafe_raiting"
+                                                   name="xle_cafebundle_cafe[raiting]"
+                                                   class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label" for="xle_cafebundle_cafe_review">Отзыв</label>
+                                            <input type="text" id="xle_cafebundle_cafe_review"
+                                                   name="xle_cafebundle_cafe[review]"
+                                                   class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label" for="xle_cafebundle_cafe_status">Статус</label>
+                                            <input type="text" id="xle_cafebundle_cafe_status"
+                                                   name="xle_cafebundle_cafe[status]"
+                                                   class="form-control">
+                                        </div>
+                                        <input type="hidden" id="xle_cafebundle_cafe__token"
+                                               name="xle_cafebundle_cafe[_token]"
+                                               value="AlzYcMhiuR68HPMxSXdegTII8oeJanG4MY_Qfkxffsc">
+                                    </form>
+                                </div>
+                                <div class="row form-group" align="center">
+                                    <button
+                                            class="btn btn-success btn-save"
+                                            onclick="updateCafe();"
+                                    >Сохранить</button>
+                                    <button class="btn btn-danger btn-delete">Удалить</button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        {% endblock %}
+
+{% block body %}
+    <script src="{{ asset('build/manifest.js') }}"></script>
+    <script src="{{ asset('build/js/common.js') }}"></script>
+    <script src="{{ asset('build/js/app.js') }}"></script>
+{% endblock %}
+
+

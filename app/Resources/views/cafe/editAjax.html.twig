@@ -1,0 +1,9 @@
+{% block body %}
+    <h1>Cafe edit</h1>
+
+    {{ form_start(edit_form) }}
+        {{ form_widget(edit_form) }}
+        <input type="button" value="Сохранить" onclick="updateCafe()" />
+    {{ form_end(edit_form) }}
+
+{% endblock %}

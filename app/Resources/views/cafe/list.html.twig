@@ -1,0 +1,72 @@
+{% extends 'baseCafe.html.twig' %}
+
+        {% block javascripts %}
+            <script src="{{ asset('build/js/cafe.js') }}"></script>
+            <script src="{{ asset('build/js/cafeOperations.js') }}"></script>
+        {% endblock %}
+
+        {% block contentHeader %}
+            <b>Welcome to Google Cafe!</b>
+            <input id="searchTextField" size="100">
+            <button class="btn btn-success"
+                    onclick="
+                $('#info_test').html('jQuery is here');
+                searchByAdress();"
+            >Поиск по адресу</button>
+        {% endblock %}
+        {% block contentLeft %}
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1>Список кафе</h1>
+                        <table class="table-hover" style="width: 100%">
+                            <thead>
+                            <tr>
+                                <th>Название</th>
+                                <th>Рейтинг</th>
+                                <th>Статус</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for cafe in cafes %}
+                                <tr>
+                                    <td>{{ cafe.title }}</td>
+                                    <td>{{ cafe.raiting }}</td>
+                                    <td>{{ cafe.status }}</td>
+                                    <td>
+                                        <a href="#"
+                                           id="choice_{{ cafe.id }}"
+                                           class="choice_btn"
+                                           title="Подробно"
+                                           data-action='to_open'
+                                           data-cafe_id = {{ cafe.id }}
+                                           onclick="choiceOperation(this);"
+                                        >
+                                            <span class="glyphicon glyphicon-chevron-down"></span>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">
+                                        <div id="infoWindow_{{ cafe.id }}" class="infoWindow" style="display: none">
+                                            <b>Infowindow</b>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        {% endblock %}
+
+{% block body %}
+    <script src="{{ asset('build/manifest.js') }}"></script>
+    <script src="{{ asset('build/js/common.js') }}"></script>
+    <script src="{{ asset('build/js/app.js') }}"></script>
+{% endblock %}
+
+
