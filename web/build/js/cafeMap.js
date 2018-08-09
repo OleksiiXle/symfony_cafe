@@ -78,7 +78,6 @@ function initMap() {
     autocomplete = new google.maps.places.Autocomplete(input, options);
     document.getElementById('searchTextField').placeholder = 'Введите адрес';
     console.log(cafesArray);
-
 }
 
 //*********************************************************************************************** НАРИСОВАТЬ ОСНОВНОЙ МАРКЕР

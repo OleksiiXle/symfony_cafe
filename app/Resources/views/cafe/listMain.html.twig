@@ -1,0 +1,47 @@
+{% extends 'baseCafe.html.twig' %}
+
+        {% block javascripts %}
+            <script src="{{ asset('build/js/cafeMap.js') }}"></script>
+            <script src="{{ asset('build/js/cafeOperations.js') }}"></script>
+        {% endblock %}
+
+        {% block contentHeader %}
+            <b>Welcome</b>
+            <input id="searchTextField" size="100">
+            <button class="btn btn-success"
+                    onclick="
+                $('#info_test').html('jQuery is here');
+                searchByAdress();"
+            >Поиск по адресу</button>
+        {% endblock %}
+        {% block contentLeft %}
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-1">
+                        <a href="#"
+                           title="Показать кафе из базы данных"
+                           onclick="loadCafeFrom('db');">
+                            <span class="glyphicon glyphicon-folder-close"></span>
+                        </a>
+                    </div>
+                    <div class="col-md-1 col-md-offset-10">
+                        <a href="#"
+                           title="Показать кафе, отмеченные на карте"
+                           onclick="loadCafeFrom('map');">
+                            <span class="glyphicon glyphicon-picture"></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="cafeGrid"></div>
+                </div>
+            </div>
+        {% endblock %}
+
+{% block body %}
+    <script src="{{ asset('build/manifest.js') }}"></script>
+    <script src="{{ asset('build/js/common.js') }}"></script>
+    <script src="{{ asset('build/js/app.js') }}"></script>
+{% endblock %}
+
+

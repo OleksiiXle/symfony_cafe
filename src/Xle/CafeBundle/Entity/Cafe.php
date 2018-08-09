@@ -12,6 +12,15 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Cafe
 {
+    public $raitingArray =  [
+        0 => 'Не установлен',
+        1 => 'Ни какое',
+        2 => 'Ниже среднего',
+        3 => 'Так-себе',
+        4 => 'Очень даже ничего',
+        5 => 'Фэн-шуй',
+    ];
+
     /**
      * @var int
      *
@@ -41,6 +50,12 @@ class Cafe
      * @ORM\Column(name="raiting", type="smallint", nullable=true)
      */
     private $raiting;
+
+    /**
+     * @var string
+     *
+     */
+    private $raitingTxt;
 
     /**
      * @var string
@@ -76,6 +91,12 @@ class Cafe
      * @ORM\Column(name="status", type="smallint", nullable=true)
      */
     private $status;
+
+    /**
+     * @var string
+     *
+     */
+    private $statusTxt;
 
     /**
      * @var \DateTime
@@ -165,6 +186,17 @@ class Cafe
     public function getRaiting()
     {
         return $this->raiting;
+    }
+
+    /**
+     * Get raitingTxt
+     *
+     * @return int
+     */
+    public function getRaitingTxt()
+    {
+        $this->raitingTxt = (empty($this->raiting)) ? '' : $this->raitingArray[$this->raiting];
+        return  $this->raitingTxt;
     }
 
     /**
@@ -286,6 +318,18 @@ class Cafe
     {
         return $this->status;
     }
+
+    /**
+     * Get statusTxt
+     *
+     * @return int
+     */
+    public function getStatusTxt()
+    {
+        $this->statusTxt = (!empty($this->raiting) && !empty($this->raiting)) ? 'Оценено' : 'Не оценено';
+        return  $this->statusTxt;
+    }
+
 
     /**
      * Set createdAt

@@ -1,3 +1,19 @@
+function loadCafeFrom(sourse) {
+    $.ajax({
+        url: 'http://cafe/cafe/cmanager/' + sourse,
+        type: "POST",
+        success: function(response){
+          //    console.log(response);
+            $("#cafeGrid").html(response);
+        },
+        error: function (jqXHR, error, errorThrown) {
+            console.log( "error : " + error + " " +  errorThrown);
+            console.log(jqXHR);
+        }
+    });
+
+}
+
 //-- обработка клика на кнопку открытия окна редактирования
 function updateWindowOpen(item) {
    // console.log(item.dataset.action);
@@ -89,6 +105,7 @@ function getInfo(cafe_id) {
 
 //-- вывод данных в открывшееся окно просмотра
 function getInfoView(item) {
+   // alert(item.dataset.cafe_id);
   // $(".infoWindow").empty().hide();
     $("#infoWindow_" + item.dataset.cafe_id).show();
     $.ajax({
@@ -137,13 +154,11 @@ function updateCafe() {
         success: function(response){
             console.log(response);
             //-- звкрыть все открытые окна
-            $(".infoWindow").empty().hide();
-            //-- поменять все открытые шевроны на закрытые
-            var chevrones =  $(".choice_btn");
-            $(chevrones).each(function () {
-                item.dataset.action = 'to_open';
-                this.innerHTML = '<span class="glyphicon glyphicon-chevron-down"></span>';
-            });
+            $(".updateWindow").empty().hide();
+            if (response['status']){
+                $("#td_raiting_" + response['data']['id']).html(response['data']['raiting']);
+                $("#td_status_" + response['data']['id']).html(response['data']['status']);
+            }
 
 
         },
@@ -184,3 +199,6 @@ function deleteCafe(item) {
     }
     // $(".infoWindow").empty().hide();
 }
+
+//************************************************************************************ СТАРТ
+loadCafeFrom('db');

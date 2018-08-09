@@ -18,6 +18,16 @@ cmanager_info1:
     defaults: { _controller: "XleCafeBundle:Cafe:info1" }
     methods:  [GET, POST]
 
+cmanager_db:
+    path:     /db
+    defaults: { _controller: "XleCafeBundle:Cafe:db" }
+    methods:  [GET, POST]
+
+cmanager_map:
+    path:     /map
+    defaults: { _controller: "XleCafeBundle:Cafe:map" }
+    methods:  [GET, POST]
+
 cmanager_modify:
     path:     /modify
     defaults: { _controller: "XleCafeBundle:Cafe:modify" }

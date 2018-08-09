@@ -15,6 +15,15 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class CafeController extends Controller
 {
+    public $raiting =  [
+        0 => 'Не установлен',
+        1 => 'Ни какое',
+        2 => 'Ниже среднего',
+        3 => 'Так-себе',
+        4 => 'Очень даже ничего',
+        5 => 'Фэн-шуй',
+    ];
+
     /**
      * Lists all cafe entities.
      *
@@ -30,72 +39,89 @@ class CafeController extends Controller
         ));
     }
 
+
     /**
-     * Lists all cafe entities with map.
+     * Главный вид
      *
      */
     public function listAction()
     {
+      //  $em = $this->getDoctrine()->getManager();
+
+     //   $cafes = $em->getRepository('XleCafeBundle:Cafe')->findAll();
+
+  //     return $this->render('cafe/list.html.twig', array(
+        return $this->render('cafe/listMain.html.twig', array(
+           // 'cafes' => $cafes,
+        ));
+    }
+
+    /**
+     * Аяксом возвращает вид грида кафе c карты
+     *
+     */
+    public function mapAction() {
+        return $this->render('cafe/listMap.html.twig', array(
+        ));
+    }
+
+    /**
+     * Аяксом возвращает вид грида кафе из БД
+     *
+     */
+    public function dbAction() {
         $em = $this->getDoctrine()->getManager();
-
         $cafes = $em->getRepository('XleCafeBundle:Cafe')->findAll();
-
-        return $this->render('cafe/list.html.twig', array(
+        return $this->render('cafe/listDB.html.twig', array(
             'cafes' => $cafes,
         ));
     }
+
 
     /**
      * ajax send cafe JSON.
      *
      */
-    public function infoAction($cafe_id)
-    {
+    public function infoAction($cafe_id) {
         $result = [
-            'status' => true,
-            'data' => $cafe_id
+            'status' => false,
+            'data' => 'error'
         ];
-        $em = $this->getDoctrine()->getManager();
-        $cafe = $em->getRepository(Cafe::class)->find($cafe_id);
-        $result['data'] = [
-          'id' => $cafe->getId(),
-          'google_place_id' => $cafe->getGooglePlaceId(),
-          'title' => $cafe->getTitle(),
-          'raiting' => $cafe->getRaiting(),
-          'review' => $cafe->getReview(),
-          'status' => $cafe->getStatus(),
-          'address' => $cafe->getAddress(),
-          'lat' => $cafe->getLat(),
-          'lang' => $cafe->getLng(),
-        ];
-
-        /*
-        $deleteForm = $this->createDeleteForm($cafe);
-        $editForm = $this->createForm('Xle\CafeBundle\Form\CafeType', $cafe);
-        $editForm->handleRequest($request);
-        return $this->render('cafe/edit.html.twig', array(
-            'cafe' => $cafe,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
-        */
-
+        try {
+            $em = $this->getDoctrine()->getManager();
+            $cafe = $em->getRepository(Cafe::class)->find($cafe_id);
+            if (isset($cafe)){
+                $result['data'] = [
+                    'id' => $cafe->getId(),
+                    'google_place_id' => $cafe->getGooglePlaceId(),
+                    'title' => $cafe->getTitle(),
+                    'raiting' =>  (!empty($cafe->getRaiting()))
+                        ? $this->raiting[$cafe->getRaiting()]
+                        : 'Не установлен',
+                    'review' => $cafe->getReview(),
+                    'status' => (($cafe->getRaiting() > 0 || !empty($cafe->getReview())) ? 'Оценено' : 'Не оценено'),
+                    'address' => $cafe->getAddress(),
+                    'lat' => $cafe->getLat(),
+                    'lang' => $cafe->getLng(),
+                ];
+                $result['status'] = true;
+            }
+        } catch (\Exception $e){
+            $result['data'] = $e->getMessage();
+        }
         return new Response( json_encode($result), 200 );
-        return new JsonResponse('Success', 200);
-        return json_encode($result);
 
     }
+
     /**
      * ajax send cafe update form.
      *
      */
-    public function info1Action(Request $request, $cafe_id)
-    {
+    public function info1Action(Request $request, $cafe_id) {
         $em = $this->getDoctrine()->getManager();
         $cafe = $em->getRepository(Cafe::class)->find($cafe_id);
         $editForm = $this->createForm('Xle\CafeBundle\Form\CafeShortType', $cafe);
         $editForm->handleRequest($request);
-
         return $this->render('cafe/editAjax.html.twig', array(
             'cafe' => $cafe,
             'edit_form' => $editForm->createView(),
@@ -103,7 +129,7 @@ class CafeController extends Controller
     }
 
     /**
-     * ajax update/delete one cafe, return JSON.
+     *   ajax update one cafe, return JSON.
      *
      */
     public function modifyAction(Request $request)
@@ -121,10 +147,21 @@ class CafeController extends Controller
 
         if ($editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
-            $result = [
-                'status' => true,
-                'data' => ['OK']
+            $cafe = $em->getRepository(Cafe::class)->find($cafe_id);
+            $result['data'] = [
+                'id' => $cafe->getId(),
+                'google_place_id' => $cafe->getGooglePlaceId(),
+                'title' => $cafe->getTitle(),
+                'raiting' =>  (!empty($cafe->getRaiting()))
+                    ? $this->raiting[$cafe->getRaiting()]
+                    : 'Не установлен',
+                'review' => $cafe->getReview(),
+                'status' => (($cafe->getRaiting() > 0 || !empty($cafe->getReview())) ? 'Оценено' : 'Не оценено'),
+                'address' => $cafe->getAddress(),
+                'lat' => $cafe->getLat(),
+                'lang' => $cafe->getLng(),
             ];
+            $result['status'] = true;
 
         } else {
             $result['data'] = $editForm->getErrors();

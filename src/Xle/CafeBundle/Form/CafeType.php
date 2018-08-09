@@ -13,7 +13,10 @@ class CafeType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('googlePlaceId')->add('title')->add('raiting')->add('review')->add('address')->add('lat')->add('lng')->add('status')->add('createdAt');
+        $builder->add('googlePlaceId')
+            ->add('title')->add('raiting')->add('review')
+            ->add('address')->add('lat')
+            ->add('lng')->add('statusTxt')->add('raitingTxt');
     }/**
      * {@inheritdoc}
      */

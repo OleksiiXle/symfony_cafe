@@ -17,7 +17,7 @@ class CafeShortType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('title')
+        $builder
             ->add('raiting', ChoiceType::class, [
                 'choices' => [
                     'Не установлен' => 0,
@@ -27,37 +27,20 @@ class CafeShortType extends AbstractType
                     'Очень даже ничего' => 4,
                     'Фэн-шуй' => 5,
                 ],
+                'label' => 'Рейтинг'
             ])
             ->add('review', TextareaType::class,[
                 'attr' => ['row' => 2, 'col' => 20, ],
                 'label' => 'Отзыв'
-            ])
-            ->add('status', ChoiceType::class, [
-                'choices' => [
-                    'Отзыва нет' => 0,
-                    'Отзыв есть' => 1,
-                ],
             ])
             ->add('id', IntegerType::class, [
                 'attr' => ['style' => 'display:none;'],
                 'label' => false
 
             ]);
+    }
 
-
-/*
-        $builder->add('attending', ChoiceType::class, array(
-            'choices' => array(
-                new Status(Status::YES),
-                new Status(Status::NO),
-                new Status(Status::MAYBE),
-            ),
-            'choice_label' => 'displayName',  // <-- where this is getDisplayName() on the object.
-        ));
-*/
-
-
-    }/**
+    /**
      * {@inheritdoc}
      */
     public function configureOptions(OptionsResolver $resolver)
