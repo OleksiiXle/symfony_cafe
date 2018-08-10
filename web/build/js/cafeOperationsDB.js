@@ -126,8 +126,7 @@ function getInfo(cafe_id) {
             */
         },
         error: function (jqXHR, error, errorThrown) {
-            console.log( "error : " + error + " " +  errorThrown);
-            console.log(jqXHR);
+            errorHandler(jqXHR, error, errorThrown);
         }
     });
 }
@@ -252,8 +251,7 @@ function addCafiesToDB() {
             dataType: 'json',
             success: function(response){
                 console.log(response);
-                objDump(response['data']);
-                loadCafeFrom('db');
+                alert(response['data'])
                 //-- звкрыть все открытые окна
             },
             error: function (jqXHR, error, errorThrown) {
@@ -265,16 +263,15 @@ function addCafiesToDB() {
 
 }
 
-function objDump(object) {
-    var out = "";
-    if (object && typeof(object) == "object") {
-        for (var i in object) {
-            out += i + ": " + object[i] + "\n";
-        }
-    } else {
-        out = object;
+function errorHandler(response, status, xhr){
+    console.log('Ошибка:');
+    console.log(response);
+    console.log(status);
+    console.log(jqXHR['status']);
+    console.log(xhr);
+    if (jqXHR['status']==403){
+        alert('accessDeny');
     }
-    alert(out);
 }
 
 

@@ -172,6 +172,8 @@ class CafeController extends Controller
      *
      */
     public function info1Action(Request $request, $cafe_id) {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN', null, 'Unable to access this page!');
+
         $em = $this->getDoctrine()->getManager();
         $cafe = $em->getRepository(Cafe::class)->find($cafe_id);
         $editForm = $this->createForm('Xle\CafeBundle\Form\CafeShortType', $cafe);
@@ -189,7 +191,9 @@ class CafeController extends Controller
      */
     public function modifyAction(Request $request)
     {
-      //  $csrfToken = $client->getContainer()->get('security.csrf.token_manager')->getToken($csrfTokenId);
+        $this->denyAccessUnlessGranted('ROLE_ADMIN', null, 'Unable to access this page!');
+
+        //  $csrfToken = $client->getContainer()->get('security.csrf.token_manager')->getToken($csrfTokenId);
         $result = [
             'status' => false,
             'data' => 'errors'

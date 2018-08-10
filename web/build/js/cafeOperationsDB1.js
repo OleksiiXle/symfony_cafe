@@ -126,6 +126,7 @@ function getInfo(cafe_id) {
             */
         },
         error: function (jqXHR, error, errorThrown) {
+            alert('ff');
             errorHandler(jqXHR, error, errorThrown);
         }
     });
@@ -191,7 +192,9 @@ function updateCafe() {
 
         },
         error: function (jqXHR, error, errorThrown) {
-            errorHandler(jqXHR, error, errorThrown);        }
+            console.log( "error : " + error + " " +  errorThrown);
+            console.log(jqXHR);
+        }
     });
 
 
@@ -253,19 +256,21 @@ function addCafiesToDB() {
                 //-- звкрыть все открытые окна
             },
             error: function (jqXHR, error, errorThrown) {
-                errorHandler(jqXHR, error, errorThrown);            }
+                console.log( "error : " + error + " " +  errorThrown);
+                console.log(jqXHR);
+            }
         });
     }
 
 }
 
-function errorHandler(jqXHR,  error, errorThrown){
+function errorHandler(response, status, xhr){
     console.log('Ошибка:');
-    console.log(jqXHR);
-    console.log(errorThrown);
-    console.log(jqXHR['status']);
+    console.log(response);
+    console.log(status);
+    console.log(xhr);
     if (jqXHR['status']==403){
-        alert('Действие запрещено, необходимы права администратора.');
+        alert('accessDeny');
     }
 }
 
