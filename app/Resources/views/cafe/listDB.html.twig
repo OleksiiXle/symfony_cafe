@@ -2,22 +2,23 @@
     <div class="row">
         <div class="col-md-12">
             <b>Список кафе из БД</b>
-            <table class="table-hover" style="width: 100%">
-                <thead>
-                <tr>
-                    <th>Название</th>
-                    <th>Рейтинг</th>
-                    <th>Статус</th>
-                    <th>Действия</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for cafe in cafes %}
-                    <tr id="tr_{{ cafe.id }}">
-                        <td id="td_title_{{ cafe.id }}">{{ cafe.title }}</td>
-                        <td id="td_raiting_{{ cafe.id }}">{{ cafe.raitingTxt }}</td>
-                        <td id="td_status_{{ cafe.id }}">{{ cafe.statusTxt }}</td>
-                        <td>
+            <div class="scroll-block">
+                <table class="table-hover table-bordered" style="width: 100%;">
+                    <thead>
+                    <tr>
+                        <th class="myTd">Название</th>
+                        <th class="myTd">Рейтинг</th>
+                        <th class="myTd">Статус</th>
+                        <th class="myTd">Действия</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for cafe in cafes %}
+                        <tr id="tr_{{ cafe.id }}" >
+                            <td id="td_title_{{ cafe.id }}" class="myTd">{{ cafe.title }}</td>
+                            <td id="td_raiting_{{ cafe.id }}" class="myTd">{{ cafe.raitingTxt }}</td>
+                            <td id="td_status_{{ cafe.id }}" class="myTd">{{ cafe.statusTxt }}</td>
+                            <td class="myTd">
                                         <span>
                                            <a href="#"
                                               id="view_{{ cafe.id }}"
@@ -47,19 +48,21 @@
                                           </a>
 
                                         </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="4">
-                            <div id="updateWindow_{{ cafe.id }}" class="updateWindow" style="display: none">
-                            </div>
-                            <div id="infoWindow_{{ cafe.id }}" class="infoWindow" style="display: none">
-                            </div>
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <div id="updateWindow_{{ cafe.id }}" class="updateWindow" style="display: none">
+                                </div>
+                                <div id="infoWindow_{{ cafe.id }}" class="infoWindow" style="display: none">
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
             <div id="viewExample" style="display: none">
                 <div class="container-fluid">
                     <div class="row">

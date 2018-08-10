@@ -24,13 +24,18 @@ cmanager_db:
     methods:  [GET, POST]
 
 cmanager_map:
-    path:     /map
+    path:     /{cafe_json}/map
     defaults: { _controller: "XleCafeBundle:Cafe:map" }
-    methods:  [GET, POST]
+    methods:  GET
 
 cmanager_modify:
     path:     /modify
     defaults: { _controller: "XleCafeBundle:Cafe:modify" }
+    methods:  POST
+
+cmanager_append:
+    path:     /append
+    defaults: { _controller: "XleCafeBundle:Cafe:append" }
     methods:  POST
 
 cmanager_show:

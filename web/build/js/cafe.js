@@ -78,7 +78,6 @@ function initMap() {
     autocomplete = new google.maps.places.Autocomplete(input, options);
     document.getElementById('searchTextField').placeholder = 'Введите адрес';
     console.log(cafesArray);
-
 }
 
 //*********************************************************************************************** НАРИСОВАТЬ ОСНОВНОЙ МАРКЕР
@@ -152,10 +151,14 @@ function refreshMap() {
 function callbackRefreshMap(results, status) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
         for (var i = 0; i < results.length; i++) {
-          //  console.log(results[i].vicinity);
+            console.log(results[i]);
             createMarker(results[i]);
             cafesArray.push({'id':results[i].id, 'name':results[i].name,
                 'lat':results[i].geometry.location.lat(), 'lng':results[i].geometry.location.lng() });
+
+/*            cafesArray[results[i].id] = {'name':results[i].name,
+                'lat':results[i].geometry.location.lat(), 'lng':results[i].geometry.location.lng() };
+                */
         }
     }
 }

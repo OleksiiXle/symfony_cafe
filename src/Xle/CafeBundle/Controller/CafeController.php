@@ -58,11 +58,65 @@ class CafeController extends Controller
 
     /**
      * Аяксом возвращает вид грида кафе c карты
+    Array
+    (
+    [0] => Array
+    (
+    [id] => 2167f0a947ba9a6c6e51213098b90175510d2a5b
+    [name] => Наама Бэй
+    [lat] => 50.011548
+    [lng] => 36.2206864
+    )
+
+    [1] => Array
+    (
+    [id] => 45ee6aed5298730abed9e33ea3a7f3e846fbf321
+    [name] => Витамин
+    [lat] => 50.015692
+    [lng] => 36.2225943
+    )
+
      *
      */
-    public function mapAction() {
-        return $this->render('cafe/listMap.html.twig', array(
-        ));
+    public function mapAction(Request $request, $cafe_json) {
+        $mapCafes = json_decode($cafe_json, true);
+       // $mapCafes = json_decode($request->getContent(), true);
+        //-- массив гугл-идентификаторов кафешек с карты
+        $mapCafesIds = [];
+        foreach ($mapCafes as $cafe){
+            $mapCafesIds[] = $cafe['id'];
+        }
+        //-- получаем кафе из бд, по совпадению гугл-идентификатора с массивом
+        $em = $this->getDoctrine()->getManager();
+        $cafesEntities = (array) $em->getRepository('XleCafeBundle:Cafe')->findByGmKeyInArray($mapCafesIds);
+        //-- преобразуем его для дальнейшего удобного использования
+        $cafes = [];
+        foreach ($cafesEntities as $key => $cafe){
+            $cafes[$cafe->getGooglePlaceId()] = [
+                'id' => $cafe->getId(),
+                'title' => $cafe->getTitle(),
+                'raiting' =>  $cafe->getRaitingTxt(),
+                'review' => $cafe->getReview(),
+                'status' => $cafe->getStatusTxt(),
+                'address' => $cafe->getAddress(),
+            ];
+        }
+        //-- формируем массив кафешек с карты с учетом наличия информации в бд для передачи во вьюху
+        $ret = [];
+        foreach ($mapCafes as $mp){
+            $ret[]=[
+              'id' =>  $mp['id'],
+              'name' =>  $mp['name'],
+              'address' =>  $mp['address'],
+              'raiting' =>  ((isset($cafes[$mp['id']])) ? $cafes[$mp['id']]['raiting'] : '') ,
+              'db' =>  ((isset($cafes[$mp['id']])) ? 'Уже сохранено' : '') ,
+              'lat' => $mp['lat'],
+              'lng' => $mp['lng'],
+           ];
+        }
+        return $this->render('cafe/listMap.html.twig', [
+            'cafes' => $ret,
+        ]);
     }
 
     /**
@@ -130,6 +184,7 @@ class CafeController extends Controller
 
     /**
      *   ajax update one cafe, return JSON.
+     *     Array
      *
      */
     public function modifyAction(Request $request)
@@ -137,7 +192,7 @@ class CafeController extends Controller
       //  $csrfToken = $client->getContainer()->get('security.csrf.token_manager')->getToken($csrfTokenId);
         $result = [
             'status' => false,
-            'data' => ['errors']
+            'data' => 'errors'
         ];
         $cafe_id = $_REQUEST['xle_cafebundle_cafe']['id'];
         $em = $this->getDoctrine()->getManager();
@@ -179,8 +234,67 @@ class CafeController extends Controller
         */
 
         return new Response( json_encode($result), 200 );
-      //  return new JsonResponse('Success', 200);
-     //   return json_encode($result);
+
+    }
+
+    /**
+     *   ajax append selected cafies from map, return JSON.
+     *
+     *     (
+    [0] => Array
+    (
+    [id] => 13ff332f609c5eb2c39984ed297bad4f28186135
+    [name] => alquds cafe
+    [address] => Харків
+    [lat] => 50.0129666
+    [lng] => 36.2234752
+    )
+
+    [1] => Array
+    (
+    [id] => 70ad7884df06e63bbf948bed1117d125e7c58685
+    [name] => Jam & Coffee
+    [address] => 61000, вулиця Клочківська, 191а, Харків
+    [lat] => 50.0146674
+    [lng] => 36.2150339
+    )
+
+
+     */
+    public function appendAction(Request $request) {
+        $mapCafies = json_decode($request->getContent(), true);
+        $result['status'] = false;
+        try{
+            $result['data']=[];
+            $em = $this->getDoctrine()->getManager();
+            $validator = $this->get('validator');
+            foreach ($mapCafies as $newCafe){
+                $cafe = new Cafe();
+                $cafe->setGooglePlaceId($newCafe['id']);
+                $cafe->setTitle($newCafe['name']);
+                $cafe->setAddress($newCafe['address']);
+                $cafe->setLat($newCafe['lat']);
+                $cafe->setLng($newCafe['lng']);
+                $errors = $validator->validate($cafe);
+                if (count($errors) == 0) {
+                    $em->persist($cafe);
+                    $em->flush();
+                    $result['data'][$newCafe['name']]= 'ok';
+                } else {
+                    $errStr = 'Ошибка валидации: ';
+                    foreach ($errors as $error){
+                        $errStr .= $error->getMessage() . ' *** ';
+                    }
+                    $result['data'][$newCafe['name']]= $errStr;
+                    $f='/^[А-ЯІЇЄҐа-яіїєґ0-9 ()ʼ,"\-]+$/i';
+                }
+            }
+            $result['status'] = true;
+        } catch (\Exception $e){
+            $result['data'] = [$e->getMessage()];
+        }
+        return new Response( json_encode($result), 200 );
+
 
     }
 

@@ -10,4 +10,28 @@ namespace Xle\CafeBundle\Repository;
  */
 class CafeRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function findByGmKeyInArray($gmIdsArray): array {
+        $qb = $this->createQueryBuilder('c')
+            ->andWhere('c.googlePlaceId IN (:gmIdsArray)')
+            ->setParameter('gmIdsArray', $gmIdsArray)
+            ->groupBy('c.googlePlaceId')
+            //  ->orderBy('c.id', 'ASC')
+            ->getQuery();
+      //  $sql = $qb->getSQL();
+
+        return $qb->execute();
+    }
+
+    public function findByGmKeyInArray2($mapCafesIds)
+    {
+        $mapCafesIdsStr = implode(',', $mapCafesIds);
+        $query = $this->getEntityManager()
+            ->createQuery(
+                "SELECT c FROM XleCafeBundle:Cafe c WHERE c.googlePlaceId IN ($mapCafesIdsStr)"
+            );
+    //    $sql = $query->getSQL();
+        return $query->getResult();
+    }
+
+
 }

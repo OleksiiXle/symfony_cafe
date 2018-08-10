@@ -3,6 +3,8 @@
 namespace Xle\CafeBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * Cafe
@@ -40,7 +42,19 @@ class Cafe
     /**
      * @var string
      *
-     * @ORM\Column(name="title", type="string", length=255, nullable=true)
+     * @ORM\Column(name="title", type="string", length=255, nullable=false)
+     * @Assert\NotBlank(message="Необходимо указать название")
+     * @Assert\Length(
+     *     min=3,
+     *     minMessage="Название слишком короткое (минимум 3 символа)",
+     *     max=255,
+     *     maxMessage="Название слишком длинное (максимум 255 символов)"
+     * )
+     * @Assert\Regex(
+     *     pattern="/^[А-ЯІЇЄҐа-яіїєґ0-9 ()-]+$/i",
+     *     match=true,
+     *     message="Your name cannot contain a number"
+     * )
      */
     private $title;
 
@@ -68,6 +82,12 @@ class Cafe
      * @var string
      *
      * @ORM\Column(name="address", type="string", length=255, nullable=true)
+     * @Assert\Length(
+     *     min=3,
+     *     minMessage="Адрес слишком короткий (минимум 3 символа)",
+     *     max=255,
+     *     maxMessage="Адрес слишком длинный (максимум 255 символов)"
+     * )
      */
     private $address;
 
@@ -353,6 +373,12 @@ class Cafe
     public function getCreatedAt()
     {
         return $this->createdAt;
+    }
+
+    public function getCafesByGmKeyInArray($gmIdsArray){
+        $cafes = $this->getDoctrine()
+            ->getRepository(Cafe::class)
+            ->findAllOrderedByName();
     }
 }
 

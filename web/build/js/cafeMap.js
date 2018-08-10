@@ -151,10 +151,14 @@ function refreshMap() {
 function callbackRefreshMap(results, status) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
         for (var i = 0; i < results.length; i++) {
-          //  console.log(results[i].vicinity);
+          //  console.log(results[i]);
             createMarker(results[i]);
-            cafesArray.push({'id':results[i].id, 'name':results[i].name,
-                'lat':results[i].geometry.location.lat(), 'lng':results[i].geometry.location.lng() });
+            cafesArray.push({'id':results[i].id, 'name':results[i].name, 'address':results[i].vicinity,
+                'lat':results[i].geometry.location.lat(), 'lng':results[i].geometry.location.lng(), 'addToDb':0 });
+
+/*            cafesArray[results[i].id] = {'name':results[i].name,
+                'lat':results[i].geometry.location.lat(), 'lng':results[i].geometry.location.lng() };
+                */
         }
     }
 }

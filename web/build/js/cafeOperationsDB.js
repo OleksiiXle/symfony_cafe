@@ -252,7 +252,8 @@ function addCafiesToDB() {
             dataType: 'json',
             success: function(response){
                 console.log(response);
-                alert(response['data'])
+                objDump(response['data']);
+                loadCafeFrom('db');
                 //-- звкрыть все открытые окна
             },
             error: function (jqXHR, error, errorThrown) {
@@ -263,6 +264,19 @@ function addCafiesToDB() {
     }
 
 }
+
+function objDump(object) {
+    var out = "";
+    if (object && typeof(object) == "object") {
+        for (var i in object) {
+            out += i + ": " + object[i] + "\n";
+        }
+    } else {
+        out = object;
+    }
+    alert(out);
+}
+
 
 //************************************************************************************ СТАРТ
 loadCafeFrom('db');
