@@ -145,6 +145,10 @@ class User implements UserInterface, \Serializable
         return array_unique($roles);
     }
 
+    public function isAdmin(){
+        return (in_array('ROLE_ADMIN', $this->roles));
+    }
+
     public function setRoles(array $roles)
     {
         $this->roles = $roles;

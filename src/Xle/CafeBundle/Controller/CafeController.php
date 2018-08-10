@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Xle\CafeBundle\Entity\Cafe;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * Cafe controller.
@@ -172,8 +172,10 @@ class CafeController extends Controller
      *
      */
     public function info1Action(Request $request, $cafe_id) {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN', null, 'Unable to access this page!');
-
+        $user = $this->getUser();
+        if ($user == null || !$user->isAdmin()){
+            return new Response('Access deny', "403");
+        }
         $em = $this->getDoctrine()->getManager();
         $cafe = $em->getRepository(Cafe::class)->find($cafe_id);
         $editForm = $this->createForm('Xle\CafeBundle\Form\CafeShortType', $cafe);
@@ -191,9 +193,13 @@ class CafeController extends Controller
      */
     public function modifyAction(Request $request)
     {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN', null, 'Unable to access this page!');
+        $user = $this->getUser();
+        if ($user == null || !$user->isAdmin()){
+            return new Response('Access deny', "403");
+        }
 
-        //  $csrfToken = $client->getContainer()->get('security.csrf.token_manager')->getToken($csrfTokenId);
+        //  $this->denyAccessUnlessGranted('ROLE_ADMIN', null, 'Unable to access this page!');
+
         $result = [
             'status' => false,
             'data' => 'errors'
