@@ -51,8 +51,7 @@ class Cafe
      *     maxMessage="Название слишком длинное (максимум 255 символов)"
      * )
      * @Assert\Regex(
-     *     pattern="/^[А-ЯІЇЄҐа-яіїєґ0-9 ()-]+$/i",
-     *     match=true,
+     *     pattern="/^[ а-яА-ЯёЁЇїІіЄєҐґ0-9-:'().,№_]+$/ui",
      *     message="Your name cannot contain a number"
      * )
      */
@@ -75,6 +74,16 @@ class Cafe
      * @var string
      *
      * @ORM\Column(name="review", type="string", length=255, nullable=true)
+     * @Assert\Length(
+     *     min=3,
+     *     minMessage="Отзыв слишком короткий (минимум 3 символа)",
+     *     max=255,
+     *     maxMessage="Отзыв слишком длинный (максимум 255 символов)"
+     * )
+     * @Assert\Regex(
+     *     pattern="/^[ а-яА-ЯёЁЇїІіЄєҐґ0-9-:'().,№_]+$/ui",
+     *     message="Your name cannot contain a number"
+     * )
      */
     private $review;
 
@@ -87,6 +96,10 @@ class Cafe
      *     minMessage="Адрес слишком короткий (минимум 3 символа)",
      *     max=255,
      *     maxMessage="Адрес слишком длинный (максимум 255 символов)"
+     * )
+     * @Assert\Regex(
+     *     pattern="/^[ а-яА-ЯёЁЇїІіЄєҐґ0-9-:'().,№_]+$/ui",
+     *     message="Your name cannot contain a number"
      * )
      */
     private $address;

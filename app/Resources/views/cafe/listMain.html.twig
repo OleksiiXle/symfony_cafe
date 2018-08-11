@@ -2,17 +2,21 @@
 
         {% block javascripts %}
             <script src="{{ asset('build/js/cafeMap.js') }}"></script>
-            <script src="{{ asset('build/js/cafeOperations.js') }}"></script>
+            <script src="{{ asset('build/js/cafeOperationsDB.js') }}"></script>
         {% endblock %}
 
         {% block contentHeader %}
-            <b>Welcome</b>
-            <input id="searchTextField" size="100">
-            <button class="btn btn-success"
-                    onclick="
-                $('#info_test').html('jQuery is here');
-                searchByAdress();"
-            >Поиск по адресу</button>
+            <div class="row>" style="margin: 0; padding: 5px; ">
+                        <span  >
+               <input type="text" id="searchTextField" size="65">
+               <button class="btn btn-success"
+                       onclick="
+                           $('#info_test').html('jQuery is here');
+                           searchByAdress();">
+               Поиск по адресу
+               </button>
+            </span>
+            </div>
         {% endblock %}
         {% block contentLeft %}
             <div class="container-fluid">
@@ -38,10 +42,5 @@
             </div>
         {% endblock %}
 
-{% block body %}
-    <script src="{{ asset('build/manifest.js') }}"></script>
-    <script src="{{ asset('build/js/common.js') }}"></script>
-    <script src="{{ asset('build/js/app.js') }}"></script>
-{% endblock %}
 
 

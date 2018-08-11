@@ -5,7 +5,7 @@ function loadCafeFrom(sourse) {
     switch (sourse){
         case 'db':
             $.ajax({
-                url: 'http://cafe/cafe/cmanager/' + sourse,
+                url: 'http://cafe/map/' + sourse,
                 type: "POST",
                 success: function(response){
                  //   console.log(response);
@@ -26,7 +26,7 @@ function loadCafeFrom(sourse) {
          //   console.log(data);
         //    return;
             $.ajax({
-                url: "http://cafe/cafe/cmanager/" + data + "/" + sourse,
+                url: "http://cafe/map/" + data + "/" + sourse,
                 type: "GET",
               //  dataType: 'json',
                 success: function(response){
@@ -99,7 +99,7 @@ function viewWindowOpen(item) {
 //-- вывод формы редактирования в открывшееся окно
 function getInfo(cafe_id) {
     $.ajax({
-        url: 'http://cafe/cafe/cmanager/' + cafe_id + '/info1',
+        url: 'http://cafe/map/' + cafe_id + '/info1',
         type: "POST",
        // dataType: 'json',
         success: function(response){
@@ -137,7 +137,7 @@ function getInfoView(item) {
   // $(".infoWindow").empty().hide();
     $("#infoWindow_" + item.dataset.cafe_id).show();
     $.ajax({
-        url: 'http://cafe/cafe/cmanager/' + item.dataset.cafe_id + '/info',
+        url: 'http://cafe/map/' + item.dataset.cafe_id + '/info',
         type: "POST",
         dataType: 'json',
         success: function(response){
@@ -175,24 +175,25 @@ function updateCafe() {
   //  return;
   //  alert(document.getElementById('xle_cafebundle_cafe_id').value);
     $.ajax({
-        url: 'http://cafe/cafe/cmanager/modify',
+        url: 'http://cafe/map/modify',
         data: formData,
         type: "POST",
         dataType: 'json',
         success: function(response){
             console.log(response);
             //-- звкрыть все открытые окна
-            $(".updateWindow").empty().hide();
             if (response['status']){
                 $("#td_raiting_" + response['data']['id']).html(response['data']['raiting']);
                 $("#td_status_" + response['data']['id']).html(response['data']['status']);
+                $(".updateWindow").empty().hide();
+            } else {
+                objDump(response['data']);
             }
 
 
         },
         error: function (jqXHR, error, errorThrown) {
-            console.log( "error : " + error + " " +  errorThrown);
-            console.log(jqXHR);
+            errorHandler(jqXHR, error, errorThrown);
         }
     });
 
@@ -202,30 +203,26 @@ function updateCafe() {
 //-- удаление кафе
 function deleteCafe(item) {
     if (confirm('Подтвердите удаление')){
-        alert('ok - ' + item.dataset.cafe_id);
-        $("#tr_" + item.dataset.cafe_id).remove();
-        /*
-            $("#infoWindow_" + item.dataset.cafe_id).show();
-    $.ajax({
-        url: 'http://cafe/cafe/cmanager/' + item.dataset.cafe_id + '/info',
-        type: "POST",
-        dataType: 'json',
-        success: function(response){
-            // console.log(response);
-            if (response['status']){
-            } else {
-                $("#infoWindow_" + item.dataset.cafe_id).html('Информация не найдена');
+        alert('delete - ' + item.dataset.cafe_id);
+        $.ajax({
+            url: 'http://cafe/map/' + item.dataset.cafe_id + '/delete',
+            type: "DELETE",
+            dataType: 'json',
+            success: function(response){
+                console.log(response);
+                if (response['status']){
+                    $("#tr_" + item.dataset.cafe_id).remove();
+                    alert('Кафе удалено')
+                } else {
+                    alert(('Ошибка : ' + response['data'] ))
+                }
+            },
+            error: function (jqXHR, error, errorThrown) {
+                errorHandler(jqXHR, error, errorThrown);
             }
-        },
-        error: function (jqXHR, error, errorThrown) {
-            console.log( "error : " + error + " " +  errorThrown);
-            console.log(jqXHR);
-        }
-    });
+        });
 
-         */
     }
-    // $(".infoWindow").empty().hide();
 }
 
 //-- добавить отмеченные кафе в БД
@@ -245,13 +242,13 @@ function addCafiesToDB() {
     console.log(cafeToDbArray);
     if (cafeToDbArray.length > 0){
         $.ajax({
-            url: 'http://cafe/cafe/cmanager/append',
+            url: 'http://cafe/map/append',
             data: JSON.stringify(cafeToDbArray),
             type: "POST",
             dataType: 'json',
             success: function(response){
                 console.log(response);
-                alert(response['data'])
+                objDump(response['data'])
                 //-- звкрыть все открытые окна
             },
             error: function (jqXHR, error, errorThrown) {
@@ -263,17 +260,26 @@ function addCafiesToDB() {
 
 }
 
-function errorHandler(response, status, xhr){
+function errorHandler(jqXHR, error, errorThrown){
     console.log('Ошибка:');
-    console.log(response);
-    console.log(status);
+    console.log(errorThrown);
     console.log(jqXHR['status']);
-    console.log(xhr);
     if (jqXHR['status']==403){
-        alert('accessDeny');
+        alert('Действие не возможно, необходимо войти в систему, как администратор.');
     }
 }
 
+function objDump(object) {
+    var out = "";
+    if(object && typeof(object) == "object"){
+        for (var i in object) {
+            out += i + ": " + object[i] + "\n";
+        }
+    } else {
+        out = object;
+    }
+    alert(out);
+}
 
 //************************************************************************************ СТАРТ
 loadCafeFrom('db');

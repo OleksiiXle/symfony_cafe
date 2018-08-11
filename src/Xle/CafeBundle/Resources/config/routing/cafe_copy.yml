@@ -1,5 +1,10 @@
-cmanager_list:
+cmanager_index:
     path:     /
+    defaults: { _controller: "XleCafeBundle:Cafe:index" }
+    methods:  GET
+
+cmanager_list:
+    path:     /list
     defaults: { _controller: "XleCafeBundle:Cafe:list" }
     methods:  GET
 

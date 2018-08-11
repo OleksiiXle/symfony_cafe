@@ -197,51 +197,46 @@ class CafeController extends Controller
         if ($user == null || !$user->isAdmin()){
             return new Response('Access deny', "403");
         }
-
         //  $this->denyAccessUnlessGranted('ROLE_ADMIN', null, 'Unable to access this page!');
-
-        $result = [
-            'status' => false,
-            'data' => 'errors'
-        ];
-        $cafe_id = $_REQUEST['xle_cafebundle_cafe']['id'];
-        $em = $this->getDoctrine()->getManager();
-        $cafe = $em->getRepository(Cafe::class)->find($cafe_id);
-        $editForm = $this->createForm('Xle\CafeBundle\Form\CafeShortType', $cafe);
-        $editForm->handleRequest($request);
-
-        if ($editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+        try {
+            $cafe_id = $_REQUEST['xle_cafebundle_cafe']['id'];
+            $em = $this->getDoctrine()->getManager();
             $cafe = $em->getRepository(Cafe::class)->find($cafe_id);
-            $result['data'] = [
-                'id' => $cafe->getId(),
-                'google_place_id' => $cafe->getGooglePlaceId(),
-                'title' => $cafe->getTitle(),
-                'raiting' =>  (!empty($cafe->getRaiting()))
-                    ? $this->raiting[$cafe->getRaiting()]
-                    : 'Не установлен',
-                'review' => $cafe->getReview(),
-                'status' => (($cafe->getRaiting() > 0 || !empty($cafe->getReview())) ? 'Оценено' : 'Не оценено'),
-                'address' => $cafe->getAddress(),
-                'lat' => $cafe->getLat(),
-                'lang' => $cafe->getLng(),
+            $editForm = $this->createForm('Xle\CafeBundle\Form\CafeShortType', $cafe);
+            $editForm->handleRequest($request);
+            if ($editForm->isValid()) {
+                $this->getDoctrine()->getManager()->flush();
+                $cafe = $em->getRepository(Cafe::class)->find($cafe_id);
+                $result['data'] = [
+                    'id' => $cafe->getId(),
+                    'google_place_id' => $cafe->getGooglePlaceId(),
+                    'title' => $cafe->getTitle(),
+                    'raiting' =>  (!empty($cafe->getRaiting()))
+                                    ? $this->raiting[$cafe->getRaiting()]
+                                    : 'Не установлен',
+                    'review' => $cafe->getReview(),
+                    'status' => (($cafe->getRaiting() > 0 || !empty($cafe->getReview())) ? 'Оценено' : 'Не оценено'),
+                    'address' => $cafe->getAddress(),
+                    'lat' => $cafe->getLat(),
+                    'lang' => $cafe->getLng(),
+                ];
+                $result['status'] = true;
+            } else {
+                $validator = $this->get('validator');
+                $errors = $validator->validate($cafe);
+                $errStr = 'Ошибка валидации: ';
+                foreach ($errors as $key => $error){
+                    $errStr .= $error->getMessage() . ' *** ';
+                }
+                $result['data']= $errStr;
+                $result['status'] = false;
+            }
+        } catch (\Exception $e){
+            $result = [
+                'status' => false,
+                'data' => $e->getMessage()
             ];
-            $result['status'] = true;
-
-        } else {
-            $result['data'] = $editForm->getErrors();
         }
-
-        /*
-        $deleteForm = $this->createDeleteForm($cafe);
-        $editForm = $this->createForm('Xle\CafeBundle\Form\CafeType', $cafe);
-        $editForm->handleRequest($request);
-        return $this->render('cafe/edit.html.twig', array(
-            'cafe' => $cafe,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
-        */
 
         return new Response( json_encode($result), 200 );
 
@@ -273,7 +268,6 @@ class CafeController extends Controller
      */
     public function appendAction(Request $request) {
         $mapCafies = json_decode($request->getContent(), true);
-        $result['status'] = false;
         try{
             $result['data']=[];
             $em = $this->getDoctrine()->getManager();
@@ -296,15 +290,14 @@ class CafeController extends Controller
                         $errStr .= $error->getMessage() . ' *** ';
                     }
                     $result['data'][$newCafe['name']]= $errStr;
-                    $f='/^[А-ЯІЇЄҐа-яіїєґ0-9 ()ʼ,"\-]+$/i';
                 }
             }
             $result['status'] = true;
         } catch (\Exception $e){
             $result['data'] = [$e->getMessage()];
+            $result['status'] = false;
         }
         return new Response( json_encode($result), 200 );
-
 
     }
 
@@ -375,18 +368,29 @@ class CafeController extends Controller
      * Deletes a cafe entity.
      *
      */
-    public function deleteAction(Request $request, Cafe $cafe)
-    {
-        $form = $this->createDeleteForm($cafe);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($cafe);
-            $em->flush();
+    public function deleteAction(Request $request, $id) {
+        $user = $this->getUser();
+        if ($user == null || !$user->isAdmin()){
+            return new Response('Access deny', "403");
         }
 
-        return $this->redirectToRoute('cmanager_index');
+        try {
+            $d = $request->getContent();
+            $em = $this->getDoctrine()->getManager();
+            $cafe = $em->getRepository(Cafe::class)->find($id);
+            $em->remove($cafe);
+            $em->flush();
+            $result = [
+                'status' => true,
+                'data' => $id
+            ];
+        } catch (\Exception $e){
+            $result = [
+                'status' => false,
+                'data' => $e->getMessage()
+            ];
+        }
+        return new Response( json_encode($result), 200 );
     }
 
     /**

@@ -1,70 +1,135 @@
-{#
-   This is the base template used as the application layout which contains the
-   common elements and decorates all the other templates.
-   See https://symfony.com/doc/current/book/templating.html#template-inheritance-and-layouts
-#}
 <!DOCTYPE html>
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <title>{% block title %}Авторизация{% endblock %}</title>
-        <link rel="alternate" type="application/rss+xml" title="{{ 'rss.title'|trans }}" href="{{ path('blog_rss') }}">
         {% block stylesheets %}
             <link rel="stylesheet" href="{{ asset('build/css/app.css') }}">
+        {% endblock %}
+        <style>
+            /* Always set the map height explicitly to define the size of the div
+             * element that contains the map. */
+            .contentHeader{
+                position: absolute; /* absolute | fixed | relative | static | inherit */
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 5%;
+                margin: 0;
+                padding: 5px;
+                overflow: hidden  ; /* полосы прокруткиauto | hidden | scroll | visible | inherit*/
+            }
+            .contentLeft{
+                position: absolute; /* absolute | fixed | relative | static | inherit */
+                top: 7%;
+                left: 0;
+                width: 40%;
+                height: 90%;
+                margin: 0;
+                padding: 5px;
+                background-color: lightgrey;
+                overflow: visible  ; /* полосы прокруткиauto | hidden | scroll | visible | inherit*/
+            }
+            #map {
+                position: absolute; /* absolute | fixed | relative | static | inherit */
+                top: 7%;
+                left: 40%;
+                width: 60%;
+                height: 90%;
+                margin: 0;
+                padding: 0;
+            }
+            .infoWindow{
+                margin: 0;
+                padding: 5px;
+                width: 100%;
+                height: 100%;
+                background-color: lightblue;
+            }
+            /* Optional: Makes the sample page fill the window. */
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            .field-name{
+
+            }
+            .field-value{
+                font-weight:600;
+            }
+            .edit-cafe-form{
+                margin: 0;
+                padding: 5px;
+                background-color: lemonchiffon;
+
+            }
+            .scroll-block{
+                height: 700px;
+                overflow: auto  ; /* полосы прокруткиauto | hidden | scroll | visible | inherit*/
+            }
+            .myTd{
+                padding: 10px;
+            }
+
+
+        </style>
+        {% block js_map %}
         {% endblock %}
 
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
-
-    <body id="{% block body_id %}{% endblock %}">
-
-        {% block header %}
+<body>
+    {% block header %}
             <header>
                 <div class="navbar navbar-default navbar-static-top" role="navigation" >
-                    <div class="container">
-                        <div class="navbar-header col-md-3 col-lg-2">
-                            <a class="navbar-brand" href="{{ path('homepage') }}">
-                                Авторизация
-                            </a>
+                    <div class="container-fluid">
+                        <div class="col-md-3">
+                            <div class="navbar-header ">
+                                <a class="navbar-brand" href="#">
+                                    {% block headerTitle %}
+                                    {% endblock %}
+                                </a>
+                            </div>
+
                         </div>
-                        <div class="navbar-collapse collapse">
-                            <ul class="nav navbar-nav navbar-right">
-
-
-                                {% if app.user %}
-                                    <li>
-                                        <a href="{{ path('security_logout') }}">
-                                            <i class="fa fa-sign-out" aria-hidden="true"></i> {{ 'menu.logout'|trans }}
-                                        </a>
-                                    </li>
-                                {% endif %}
-
-
-                            </ul>
+                        <div class="col-md-7">
+                                    {% block contentHeader %}
+                                    {% endblock %}
+                        </div>
+                        <div class="col-md-2">
+                            <div class="navbar-collapse collapse">
+                                <ul class="nav navbar-nav navbar-right">
+                                    {% if app.user %}
+                                        <li>
+                                            <a href="{{ path('security_logout') }}">
+                                                <i class="fa fa-sign-out" aria-hidden="true"></i> {{ 'menu.logout'|trans }}
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                        <li>
+                                            <a href="{{ path('security_login') }}">
+                                                <i class="fa fa-sign-in" aria-hidden="true"></i> {{ 'Войти'}}
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
             </header>
         {% endblock %}
-
-        <div class="container body-container">
-            {% block body %}
-                <div class="row">
-                    <div id="main" class="col-sm-9">
-                        {{ include('default/_flash_messages.html.twig') }}
-
-                        {% block main %}{% endblock %}
-                    </div>
-
-                </div>
-            {% endblock %}
-        </div>
-
-
-        {% block javascripts %}
+    <div class="contentLeft">
+        {% block contentLeft %}{% endblock %}
+    </div>
+    <div id="map">
+        {% block main %}{% endblock %}
+    </div>
+    {% block javascripts2 %}
             <script src="{{ asset('build/manifest.js') }}"></script>
             <script src="{{ asset('build/js/common.js') }}"></script>
             <script src="{{ asset('build/js/app.js') }}"></script>
-        {% endblock %}
-    </body>
+    {% endblock %}
+</body>
 </html>
