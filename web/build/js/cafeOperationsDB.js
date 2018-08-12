@@ -269,6 +269,21 @@ function errorHandler(jqXHR, error, errorThrown){
     }
 }
 
+function switchDbMap(item) {
+    console.log($(item)[0].innerText);
+    if (item.dataset.action == 'show_map'){
+        item.dataset.action = 'show_db';
+        $(item)[0].innerText ='Показать список сохраненных кафе';
+        loadCafeFrom('map');
+    } else {
+        item.dataset.action = 'show_map';
+        $(item)[0].innerText = 'Показать список кафе на карте';
+        loadCafeFrom('db');
+
+    }
+
+}
+
 function objDump(object) {
     var out = "";
     if(object && typeof(object) == "object"){

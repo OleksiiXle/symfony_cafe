@@ -182,17 +182,18 @@ function updateCafe() {
         success: function(response){
             console.log(response);
             //-- звкрыть все открытые окна
-            $(".updateWindow").empty().hide();
             if (response['status']){
                 $("#td_raiting_" + response['data']['id']).html(response['data']['raiting']);
                 $("#td_status_" + response['data']['id']).html(response['data']['status']);
+                $(".updateWindow").empty().hide();
+            } else {
+                objDump(response['data']);
             }
 
 
         },
         error: function (jqXHR, error, errorThrown) {
-            console.log( "error : " + error + " " +  errorThrown);
-            console.log(jqXHR);
+            errorHandler(jqXHR, error, errorThrown);
         }
     });
 
@@ -202,30 +203,26 @@ function updateCafe() {
 //-- удаление кафе
 function deleteCafe(item) {
     if (confirm('Подтвердите удаление')){
-        alert('ok - ' + item.dataset.cafe_id);
-        $("#tr_" + item.dataset.cafe_id).remove();
-        /*
-            $("#infoWindow_" + item.dataset.cafe_id).show();
-    $.ajax({
-        url: 'http://cafe/map/' + item.dataset.cafe_id + '/info',
-        type: "POST",
-        dataType: 'json',
-        success: function(response){
-            // console.log(response);
-            if (response['status']){
-            } else {
-                $("#infoWindow_" + item.dataset.cafe_id).html('Информация не найдена');
+        alert('delete - ' + item.dataset.cafe_id);
+        $.ajax({
+            url: 'http://cafe/map/' + item.dataset.cafe_id + '/delete',
+            type: "DELETE",
+            dataType: 'json',
+            success: function(response){
+                console.log(response);
+                if (response['status']){
+                    $("#tr_" + item.dataset.cafe_id).remove();
+                    alert('Кафе удалено')
+                } else {
+                    alert(('Ошибка : ' + response['data'] ))
+                }
+            },
+            error: function (jqXHR, error, errorThrown) {
+                errorHandler(jqXHR, error, errorThrown);
             }
-        },
-        error: function (jqXHR, error, errorThrown) {
-            console.log( "error : " + error + " " +  errorThrown);
-            console.log(jqXHR);
-        }
-    });
+        });
 
-         */
     }
-    // $(".infoWindow").empty().hide();
 }
 
 //-- добавить отмеченные кафе в БД
@@ -270,6 +267,20 @@ function errorHandler(jqXHR, error, errorThrown){
     if (jqXHR['status']==403){
         alert('Действие не возможно, необходимо войти в систему, как администратор.');
     }
+}
+
+function switchDbMap(item) {
+    if (item.dataset.data-action == 'show_map'){
+        item.dataset.data-action == 'show_db'
+        $(this).text = 'Список сохраненных кафе';
+        loadCafeFrom('map');
+    } else {
+        item.dataset.data-action == 'show_map'
+        $(this).text = 'Список кафе на карте';
+        loadCafeFrom('db');
+
+    }
+
 }
 
 function objDump(object) {

@@ -14,21 +14,11 @@ var mainPlaceId='';
 var mainPlaceAddress='Стартовая точка';
 var pinColor = "FE7569";
 var cafeToDbArray = [];
+var radiusSearch = 500;
 
 
 //*********************************************************************************************** ИНИЦИАЛИЗАЦИЯ КАРТЫ
 function initMap() {
-    $.when(
-        initMapPrewious()
-    )
-        .done(function() {
-            console.log(cafesArray)
-            loadCafeFrom('map');
-        });
-
-}
-
-function initMapPrewious() {
     //--  создание объекта карты с центром в Харькове
     map = new google.maps.Map(document.getElementById('map'), {
         center: coordinates,
@@ -49,6 +39,14 @@ function initMapPrewious() {
     drawMainMarker();
     //-- получить и нарисовать кафе вокруг основного маркера
     refreshMap();
+    /*
+    $.when(
+        refreshMap()
+    )
+        .then(function(response) {
+            loadCafeFrom('map', response);
+        });
+        */
     //-- активировать информационное окошко
     infowindow = new google.maps.InfoWindow();
     //-- обработка события по клику на карту - все маркеры удаляются, основной пеперисовываетсф в месте клика
@@ -72,8 +70,18 @@ function initMapPrewious() {
                   */
             cafesArray.length = 0;
             resetMarkers();
+
             drawMainMarker();
             refreshMap();
+            /*
+            $.when(
+                refreshMap()
+            )
+                .then(function(response) {
+                    loadCafeFrom('map', response);
+                });
+            */
+
         }
     });
     //-- определение границ автокомплита - почему то не работает
@@ -88,7 +96,9 @@ function initMapPrewious() {
     };
     autocomplete = new google.maps.places.Autocomplete(input, options);
     document.getElementById('searchTextField').placeholder = 'Введите адрес';
-    console.log(cafesArray);
+
+    console.log('map is ready');
+
 }
 
 //*********************************************************************************************** НАРИСОВАТЬ ОСНОВНОЙ МАРКЕР
@@ -112,6 +122,7 @@ function drawMainMarker() {
         }
     });
    // console.log(mainPlaceId);
+    markers.push(mainMarker);
 
     if (mainPlaceId !== ''){
         var service = new google.maps.places.PlacesService(map);
@@ -148,30 +159,78 @@ function resetMarkers() {
 //****************************************************************** ОБНОВЛЕНИЕ КАРТЫ  ******** ПОКАЗАТЬ БЛИЖАЙШИЕ КАФЕ
 function refreshMap() {
     var service = new google.maps.places.PlacesService(map);
-    //   console.log(service);
+       console.log(radiusSearch);
 
     service.nearbySearch({
         location: coordinates,
-        radius: 500,
+        radius: radiusSearch,
         type: ['cafe']
     }, callbackRefreshMap);
+    map.setZoom(15);
+
+    return(cafesArray);
+
 
 }
 
 //****************************************************************** ОБНОВЛЕНИЕ КАРТЫ  ******** ОБРАБОТКА РЕЗУЛЬТАТА refreshMap
 function callbackRefreshMap(results, status) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
+        var step1, step2, cafeData, url;
+        cafeData =  createCafeMarkers(results);
+      //  console.log('array cafesArray');
+     //   console.log(cafeData);
+        var data = encodeURIComponent(JSON.stringify(cafeData));
+       // console.log(data);
+        url = "http://cafe/map/" + data + "/map";
+
+      //  console.log(url);
+        step1 = $.ajax(url);
+        step2 = step1.then(
+            function (data) {
+                var def = new $.Deferred();
+                $("#cafeGrid").html(data);
+                var switchButton=$("#showModeSwitch");
+                $(switchButton)[0].dataset.action = 'show_db';
+                $(switchButton)[0].innerText ='Показать список сохраненных кафе';
+
+                def.resolve();
+/*
+                setTimeout(function () {
+                    $("#cafeGrid").html(data);
+                    def.resolve();
+                },1000);
+                */
+
+                return def.promise();
+
+            },
+            function (err) {
+                console.log('Step1 завершился неудачей: Ajax запрос');
+            }
+        );
+       // createCafeMarkers(results, loadCafeFrom('map', cafesArray));
+        /*
         for (var i = 0; i < results.length; i++) {
           //  console.log(results[i]);
             createMarker(results[i]);
             cafesArray.push({'id':results[i].id, 'name':results[i].name, 'address':results[i].vicinity,
                 'lat':results[i].geometry.location.lat(), 'lng':results[i].geometry.location.lng(), 'addToDb':0 });
 
-/*            cafesArray[results[i].id] = {'name':results[i].name,
-                'lat':results[i].geometry.location.lat(), 'lng':results[i].geometry.location.lng() };
-                */
         }
+        */
     }
+}
+
+function createCafeMarkers(results) {
+    for (var i = 0; i < results.length; i++) {
+        createMarker(results[i]);
+        cafesArray.push({'id':results[i].id, 'name':results[i].name, 'address':results[i].vicinity,
+            'lat':results[i].geometry.location.lat(), 'lng':results[i].geometry.location.lng(), 'addToDb':0 });
+    }
+    return cafesArray;
+
+
 }
 
 //****************************************************************** ОБНОВЛЕНИЕ КАРТЫ  ******** НАРИСОВАТЬ ОБЫЧНЫЙ МАРКЕР
@@ -203,7 +262,7 @@ function searchByAdress() {
     //-- проспект Науки, 14, Харків, Харківська область, Украина, 61000
     mainPlaceAddress = document.getElementById('searchTextField').value;
     mainPlaceId='';
-    alert(mainPlaceAddress);
+   // alert(mainPlaceAddress);
     var place = autocomplete.getPlace();
     if (  place !==undefined && place.geometry ) {
       //  console.log(place.id);
@@ -222,7 +281,35 @@ function searchByAdress() {
     }
 }
 
-//******************************************************************** FRONT-BACK-END
+function centeredCafe(item, drawMarker) {
+    coordinates = {lat: parseFloat(item.dataset.lat), lng: parseFloat(item.dataset.lng)};
+   // console.log(coordinates);
+    map.setZoom(16);
+    map.setCenter(coordinates);
+    resetMarkers();
+    var marker = new google.maps.Marker({
+        map: map,
+        position:coordinates
+    });
+    markers.push(marker);
+    google.maps.event.addListener(marker, 'click', function() {
+        var name = $("#td_name_" + item.dataset.cafe_id);
+
+        if (name.length == 0){
+            name = $("#td_title_" + item.dataset.cafe_id);
+          //  console.log(name);
+          //  console.log($(name)[0].innerText);
+
+        }
+        content = '<b>' + $(name)[0].innerText + '</b><br>' + '<br>'
+            + item.dataset.lat + ', ' +  item.dataset.lng;
+        infowindow.setContent(content);
+        infowindow.open(map, this);
+    });
+}
+
+//********************************************************************************************************  FRONT-END
+
 //--загрузка в cafeGrid грида кафе из бд или тех, что на карте bd/map
 function loadCafeFrom(sourse) {
     var data;
@@ -242,26 +329,10 @@ function loadCafeFrom(sourse) {
             });
             break;
         case 'map':
-            //  console.log('array cafesArray');
-            //  console.log(cafesArray);
             data = encodeURIComponent(JSON.stringify(cafesArray));
-            //   data = cafesArray.serialize();
-            //  console.log('data for send');
-            //   console.log(data);
-            //    return;
-            $.ajax({
-                url: "http://cafe/map/" + data + "/" + sourse,
-                type: "GET",
-                //  dataType: 'json',
-                success: function(response){
-                    //  console.log(response);
-                    $("#cafeGrid").html(response);
-                },
-                error: function (jqXHR, error, errorThrown) {
-                    console.log( "error : " + error + " " +  errorThrown);
-                    console.log(jqXHR);
-                }
-            });
+            $.get("http://cafe/map/" + data + "/" + sourse).done(function(response){
+                $("#cafeGrid").html(response);
+        });
             break;
     }
 
@@ -463,7 +534,6 @@ function addCafiesToDB() {
                 lat : this.dataset.lat, lng : this.dataset.lng});
         }
     });
-    console.log(cafeToDbArray);
     if (cafeToDbArray.length > 0){
         $.ajax({
             url: 'http://cafe/map/append',
@@ -471,9 +541,13 @@ function addCafiesToDB() {
             type: "POST",
             dataType: 'json',
             success: function(response){
-                console.log(response);
-                objDump(response['data'])
-                //-- звкрыть все открытые окна
+                objDump(response['data']);
+                loadCafeFrom('db');
+                var switchButton=$("#showModeSwitch");
+                $(switchButton)[0].dataset.action = 'show_map';
+                $(switchButton)[0].innerText ='Показать список кафе на карте';
+                loadCafeFrom('db', cafesArray);
+
             },
             error: function (jqXHR, error, errorThrown) {
                 console.log( "error : " + error + " " +  errorThrown);
@@ -493,6 +567,21 @@ function errorHandler(jqXHR, error, errorThrown){
     }
 }
 
+function switchDbMap(item) {
+    console.log($(item)[0].innerText);
+    if (item.dataset.action == 'show_map'){
+        item.dataset.action = 'show_db';
+        $(item)[0].innerText ='Показать список сохраненных кафе';
+        loadCafeFrom('map', cafesArray);
+    } else {
+        item.dataset.action = 'show_map';
+        $(item)[0].innerText = 'Показать список кафе на карте';
+        loadCafeFrom('db', cafesArray);
+
+    }
+
+}
+
 function objDump(object) {
     var out = "";
     if(object && typeof(object) == "object"){
@@ -504,8 +593,6 @@ function objDump(object) {
     }
     alert(out);
 }
-
-
 
 
 

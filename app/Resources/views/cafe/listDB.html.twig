@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
-            <b>Список кафе из БД</b>
+            <b>Список сохраненных кафе</b>
             <div class="scroll-block">
                 <table class="table-hover table-bordered" style="width: 100%;">
                     <thead>
@@ -24,9 +24,12 @@
                                               id="view_{{ cafe.id }}"
                                               class="view_btn"
                                               title="Просмотр"
+                                              onclick="viewWindowOpen(this); centeredCafe(this);"
                                               data-action='to_open'
-                                              data-cafe_id = {{ cafe.id }}
-                                              onclick="viewWindowOpen(this);">
+                                              data-cafe_id = "{{ cafe.id }}"
+                                              data-lat = "{{ cafe.lat }}"
+                                              data-lng = "{{ cafe.lng }}"
+                                            >
                                             <span class="glyphicon glyphicon-eye-open"></span>
                                           </a>
                                            <a href="#"

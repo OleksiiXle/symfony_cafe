@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
-            <b>Список кафе с карты</b>
+            <b>Список кафе на карте</b>
             <div class="scroll-block">
                 <table class="table-hover table-bordered" style="width: 100%">
                     <thead>
@@ -11,6 +11,7 @@
                         <th class="myTd">Рейтинг</th>
                         <th class="myTd">Статус</th>
                         <th class="myTd">Выбор</th>
+                        <th class="myTd">Показать на карте</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -21,7 +22,8 @@
                             <td id="td_raiting_{{ cafe.id }}" class="myTd">{{ cafe.raiting }}</td>
                             <td id="td_db_{{ cafe.id }}" class="myTd">{{ cafe.db }}</td>
                             <td class="myTd" align="center">
-                                    <input id="td_db_{{ cafe.id }}"
+                                {% if cafe.db=='' %}
+                                <input id="td_db_{{ cafe.id }}"
                                            data-lng = {{ cafe.lng }}
                                            type="checkbox"
                                            data-lat = {{ cafe.lat }}
@@ -31,6 +33,21 @@
                                            data-db = {{ cafe.db }}
 
                                     >
+                                {% endif %}
+
+                            </td>
+                            <td class="myTd" align="center">
+                                <a href="#"
+                                   class= "showCafe"
+                                   title="Показать на карте"
+                                   onclick="centeredCafe(this);"
+                                   data-cafe_id = "{{ cafe.id }}"
+                                   data-lat = "{{ cafe.lat }}"
+                                   data-lng = "{{ cafe.lng }}"
+                                >
+                                    <span class="glyphicon glyphicon-eye-open"></span>
+                                </a>
+
                             </td>
                         </tr>
                     {% endfor %}
@@ -41,7 +58,7 @@
         </div>
     </div>
     <div class="row">
-        <input type="button" class="btn btn-success" value="Сохранить" onclick="addCafiesToDB()">
+        <input type="button" class="btn btn-success" value="Сохранить выбранные кафе" onclick="addCafiesToDB()">
     </div>
 </div>
 

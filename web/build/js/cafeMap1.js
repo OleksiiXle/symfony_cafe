@@ -121,8 +121,6 @@ function drawMainMarker() {
         infowindow.setContent(infoWindowContent);
         infowindow.open(map, this);
     });
-    alert('new position');
-    loadCafeFrom('map');
 
 
 
