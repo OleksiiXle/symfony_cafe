@@ -43,7 +43,7 @@ class User implements UserInterface, \Serializable
      *
      * @ORM\Column(type="string")
      */
-    private $fullName;
+    private $fullname;
 
     /**
      * @var string
@@ -81,14 +81,14 @@ class User implements UserInterface, \Serializable
     /**
      * @param string $fullName
      */
-    public function setFullName($fullName)
+    public function setFullname($fullName)
     {
         $this->fullName = $fullName;
     }
 
-    public function getFullName()
+    public function getFullname()
     {
-        return $this->fullName;
+        return $this->fullname;
     }
 
     public function getUsername()

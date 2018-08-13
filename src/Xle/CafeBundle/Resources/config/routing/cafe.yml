@@ -38,6 +38,12 @@ cmanager_register:
     defaults: { _controller: "XleCafeBundle:Registration:register" }
     methods:  [GET, POST]
 
+cmanager_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "XleCafeBundle:Cafe:delete" }
+    methods:  DELETE
+
+
 
 
 
