@@ -67,6 +67,7 @@ class BlogController extends Controller
      * after performing a database query looking for a Post with the 'slug'
      * value given in the route.
      * See https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/annotations/converters.html
+     *
      */
     public function postShowAction(Post $post)
     {
