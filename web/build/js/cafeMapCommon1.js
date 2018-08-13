@@ -348,7 +348,7 @@ function updateCafe() {
 //-- удаление кафе
 function deleteCafe(item) {
     if (confirm('Подтвердите удаление')){
-        alert('delete - ' + item.dataset.cafe_id);
+     //   alert('delete - ' + item.dataset.cafe_id);
         $.ajax({
             url: 'http://cafe/map/' + item.dataset.cafe_id + '/delete',
             type: "DELETE",
