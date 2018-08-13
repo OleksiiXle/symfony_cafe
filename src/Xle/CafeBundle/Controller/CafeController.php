@@ -13,8 +13,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  * Cafe controller.
  *
  */
-class CafeController extends Controller
-{
+class CafeController extends Controller {
     public $raiting =  [
         0 => 'Не установлен',
         1 => 'Ни какое',
@@ -25,35 +24,10 @@ class CafeController extends Controller
     ];
 
     /**
-     * Lists all cafe entities.
-     *
-     */
-    public function indexAction()
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $cafes = $em->getRepository('XleCafeBundle:Cafe')->findAll();
-
-        return $this->render('cafe/index.html.twig', array(
-            'cafes' => $cafes,
-        ));
-    }
-
-
-    /**
      * Главный вид
-     *
      */
-    public function listAction()
-    {
-      //  $em = $this->getDoctrine()->getManager();
-
-     //   $cafes = $em->getRepository('XleCafeBundle:Cafe')->findAll();
-
-  //     return $this->render('cafe/list.html.twig', array(
-        return $this->render('cafe/listMain.html.twig', array(
-           // 'cafes' => $cafes,
-        ));
+    public function listAction() {
+        return $this->render('cafe/listMain.html.twig');
     }
 
     /**
@@ -80,7 +54,6 @@ class CafeController extends Controller
      */
     public function mapAction(Request $request, $cafe_json) {
         $mapCafes = json_decode($cafe_json, true);
-       // $mapCafes = json_decode($request->getContent(), true);
         //-- массив гугл-идентификаторов кафешек с карты
         $mapCafesIds = [];
         foreach ($mapCafes as $cafe){
@@ -121,7 +94,6 @@ class CafeController extends Controller
 
     /**
      * Аяксом возвращает вид грида кафе из БД
-     *
      */
     public function dbAction() {
         $em = $this->getDoctrine()->getManager();
@@ -134,7 +106,6 @@ class CafeController extends Controller
 
     /**
      * ajax send cafe JSON.
-     *
      */
     public function infoAction($cafe_id) {
         $result = [
@@ -169,7 +140,6 @@ class CafeController extends Controller
 
     /**
      * ajax send cafe update form.
-     *
      */
     public function info1Action(Request $request, $cafe_id) {
         $user = $this->getUser();
@@ -237,9 +207,7 @@ class CafeController extends Controller
                 'data' => $e->getMessage()
             ];
         }
-
         return new Response( json_encode($result), 200 );
-
     }
 
     /**
@@ -263,8 +231,6 @@ class CafeController extends Controller
     [lat] => 50.0146674
     [lng] => 36.2150339
     )
-
-
      */
     public function appendAction(Request $request) {
         $mapCafies = json_decode($request->getContent(), true);
@@ -298,71 +264,7 @@ class CafeController extends Controller
             $result['status'] = false;
         }
         return new Response( json_encode($result), 200 );
-
     }
-
-    /**
-     * Creates a new cafe entity.
-     *
-     */
-    public function newAction(Request $request)
-    {
-        $cafe = new Cafe();
-        $form = $this->createForm('Xle\CafeBundle\Form\CafeType', $cafe);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($cafe);
-            $em->flush();
-
-            return $this->redirectToRoute('cmanager_show', array('id' => $cafe->getId()));
-        }
-
-        return $this->render('cafe/new.html.twig', array(
-            'cafe' => $cafe,
-            'form' => $form->createView(),
-        ));
-    }
-
-    /**
-     * Finds and displays a cafe entity.
-     *
-     */
-    public function showAction(Cafe $cafe)
-    {
-        $deleteForm = $this->createDeleteForm($cafe);
-
-        return $this->render('cafe/show.html.twig', array(
-            'cafe' => $cafe,
-            'delete_form' => $deleteForm->createView(),
-        ));
-    }
-
-    /**
-     * Displays a form to edit an existing cafe entity.
-     *
-     */
-    public function editAction(Request $request, Cafe $cafe)
-    {
-        $deleteForm = $this->createDeleteForm($cafe);
-        $editForm = $this->createForm('Xle\CafeBundle\Form\CafeType', $cafe);
-        $editForm->handleRequest($request);
-
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('cmanager_edit', array('id' => $cafe->getId()));
-        }
-
-        return $this->render('cafe/edit.html.twig', array(
-            'cafe' => $cafe,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
-    }
-
-
 
     /**
      * Deletes a cafe entity.
@@ -373,7 +275,6 @@ class CafeController extends Controller
         if ($user == null || !$user->isAdmin()){
             return new Response('Access deny', "403");
         }
-
         try {
             $d = $request->getContent();
             $em = $this->getDoctrine()->getManager();
@@ -391,21 +292,5 @@ class CafeController extends Controller
             ];
         }
         return new Response( json_encode($result), 200 );
-    }
-
-    /**
-     * Creates a form to delete a cafe entity.
-     *
-     * @param Cafe $cafe The cafe entity
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createDeleteForm(Cafe $cafe)
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('cmanager_delete', array('id' => $cafe->getId())))
-            ->setMethod('DELETE')
-            ->getForm()
-        ;
     }
 }

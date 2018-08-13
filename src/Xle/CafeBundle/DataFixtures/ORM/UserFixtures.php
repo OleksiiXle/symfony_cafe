@@ -7,15 +7,13 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
-class UserFixtures extends AbstractFixture implements ContainerAwareInterface
-{
+class UserFixtures extends AbstractFixture implements ContainerAwareInterface {
     use ContainerAwareTrait;
 
     /**
      * {@inheritdoc}
      */
-    public function load(ObjectManager $manager)
-    {
+    public function load(ObjectManager $manager) {
         $passwordEncoder = $this->container->get('security.password_encoder');
 
         $cafeAdmin = new User();

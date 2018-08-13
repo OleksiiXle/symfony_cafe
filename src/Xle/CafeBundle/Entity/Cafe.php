@@ -12,8 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="cafe")
  * @ORM\Entity(repositoryClass="Xle\CafeBundle\Repository\CafeRepository")
  */
-class Cafe
-{
+class Cafe {
     public $raitingArray =  [
         0 => 'Не установлен',
         1 => 'Ни какое',
@@ -51,8 +50,8 @@ class Cafe
      *     maxMessage="Название слишком длинное (максимум 255 символов)"
      * )
      * @Assert\Regex(
-     *     pattern="/^[ а-яА-ЯёЁЇїІіЄєҐґ0-9-:'().,№_]+$/ui",
-     *     message="Your name cannot contain a number"
+     *     pattern="/^[ a-zAZа-яА-ЯёЁЇїІіЄєҐґ0-9-:'().,№_]+$/ui",
+     *     message="Название: разрешены кириллица, латиница, цифры, пробел, точка, запятая, :, -, скобки, №, одинарные кавычки"
      * )
      */
     private $title;
@@ -81,8 +80,8 @@ class Cafe
      *     maxMessage="Отзыв слишком длинный (максимум 255 символов)"
      * )
      * @Assert\Regex(
-     *     pattern="/^[ а-яА-ЯёЁЇїІіЄєҐґ0-9-:'().,№_]+$/ui",
-     *     message="Your name cannot contain a number"
+     *     pattern="/^[ a-zAZа-яА-ЯёЁЇїІіЄєҐґ0-9-:'().,№_]+$/ui",
+     *     message="Отзыв: разрешены кириллица, латиница, цифры, пробел, точка, запятая, :, -, скобки, №, одинарные кавычки"
      * )
      */
     private $review;
@@ -98,8 +97,8 @@ class Cafe
      *     maxMessage="Адрес слишком длинный (максимум 255 символов)"
      * )
      * @Assert\Regex(
-     *     pattern="/^[ а-яА-ЯёЁЇїІіЄєҐґ0-9-:'().,№_]+$/ui",
-     *     message="Your name cannot contain a number"
+     *     pattern="/^[ a-zAZа-яА-ЯёЁЇїІіЄєҐґ0-9-:'().,№_]+$/ui",
+     *     message="Адрес: разрешены кириллица, латиница, цифры, пробел, точка, запятая, :, -, скобки, №, одинарные кавычки"
      * )
      */
     private $address;
@@ -144,8 +143,7 @@ class Cafe
      *
      * @return int
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
@@ -156,8 +154,7 @@ class Cafe
      *
      * @return Cafe
      */
-    public function setGooglePlaceId($googlePlaceId)
-    {
+    public function setGooglePlaceId($googlePlaceId) {
         $this->googlePlaceId = $googlePlaceId;
 
         return $this;
@@ -168,8 +165,7 @@ class Cafe
      *
      * @return string
      */
-    public function getGooglePlaceId()
-    {
+    public function getGooglePlaceId() {
         return $this->googlePlaceId;
     }
 
@@ -180,8 +176,7 @@ class Cafe
      *
      * @return Cafe
      */
-    public function setTitle($title)
-    {
+    public function setTitle($title) {
         $this->title = $title;
 
         return $this;
@@ -192,8 +187,7 @@ class Cafe
      *
      * @return string
      */
-    public function getTitle()
-    {
+    public function getTitle() {
         return $this->title;
     }
 
@@ -204,8 +198,7 @@ class Cafe
      *
      * @return Cafe
      */
-    public function setRaiting($raiting)
-    {
+    public function setRaiting($raiting) {
         $this->raiting = $raiting;
 
         return $this;
@@ -216,8 +209,7 @@ class Cafe
      *
      * @return int
      */
-    public function getRaiting()
-    {
+    public function getRaiting() {
         return $this->raiting;
     }
 
@@ -226,8 +218,7 @@ class Cafe
      *
      * @return int
      */
-    public function getRaitingTxt()
-    {
+    public function getRaitingTxt() {
         $this->raitingTxt = (empty($this->raiting)) ? '' : $this->raitingArray[$this->raiting];
         return  $this->raitingTxt;
     }
@@ -239,8 +230,7 @@ class Cafe
      *
      * @return Cafe
      */
-    public function setReview($review)
-    {
+    public function setReview($review) {
         $this->review = $review;
 
         return $this;
@@ -251,8 +241,7 @@ class Cafe
      *
      * @return string
      */
-    public function getReview()
-    {
+    public function getReview() {
         return $this->review;
     }
 
@@ -263,8 +252,7 @@ class Cafe
      *
      * @return Cafe
      */
-    public function setAddress($address)
-    {
+    public function setAddress($address) {
         $this->address = $address;
 
         return $this;
@@ -275,8 +263,7 @@ class Cafe
      *
      * @return string
      */
-    public function getAddress()
-    {
+    public function getAddress() {
         return $this->address;
     }
 
@@ -287,8 +274,7 @@ class Cafe
      *
      * @return Cafe
      */
-    public function setLat($lat)
-    {
+    public function setLat($lat) {
         $this->lat = $lat;
 
         return $this;
@@ -299,8 +285,7 @@ class Cafe
      *
      * @return float
      */
-    public function getLat()
-    {
+    public function getLat() {
         return $this->lat;
     }
 
@@ -311,8 +296,7 @@ class Cafe
      *
      * @return Cafe
      */
-    public function setLng($lng)
-    {
+    public function setLng($lng) {
         $this->lng = $lng;
 
         return $this;
@@ -323,8 +307,7 @@ class Cafe
      *
      * @return float
      */
-    public function getLng()
-    {
+    public function getLng() {
         return $this->lng;
     }
 
@@ -335,8 +318,7 @@ class Cafe
      *
      * @return Cafe
      */
-    public function setStatus($status)
-    {
+    public function setStatus($status) {
         $this->status = $status;
 
         return $this;
@@ -347,8 +329,7 @@ class Cafe
      *
      * @return int
      */
-    public function getStatus()
-    {
+    public function getStatus() {
         return $this->status;
     }
 
@@ -357,8 +338,7 @@ class Cafe
      *
      * @return int
      */
-    public function getStatusTxt()
-    {
+    public function getStatusTxt() {
         $this->statusTxt = (!empty($this->raiting) && !empty($this->raiting)) ? 'Оценено' : 'Не оценено';
         return  $this->statusTxt;
     }
@@ -371,8 +351,7 @@ class Cafe
      *
      * @return Cafe
      */
-    public function setCreatedAt($createdAt)
-    {
+    public function setCreatedAt($createdAt) {
         $this->createdAt = $createdAt;
 
         return $this;
@@ -383,15 +362,9 @@ class Cafe
      *
      * @return \DateTime
      */
-    public function getCreatedAt()
-    {
+    public function getCreatedAt() {
         return $this->createdAt;
     }
 
-    public function getCafesByGmKeyInArray($gmIdsArray){
-        $cafes = $this->getDoctrine()
-            ->getRepository(Cafe::class)
-            ->findAllOrderedByName();
-    }
 }
 

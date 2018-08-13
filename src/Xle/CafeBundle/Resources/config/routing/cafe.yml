@@ -33,26 +33,6 @@ cmanager_append:
     defaults: { _controller: "XleCafeBundle:Cafe:append" }
     methods:  POST
 
-cmanager_show:
-    path:     /{id}/show
-    defaults: { _controller: "XleCafeBundle:Cafe:show" }
-    methods:  GET
-
-cmanager_new:
-    path:     /new
-    defaults: { _controller: "XleCafeBundle:Cafe:new" }
-    methods:  [GET, POST]
-
-cmanager_edit:
-    path:     /{id}/edit
-    defaults: { _controller: "XleCafeBundle:Cafe:edit" }
-    methods:  [GET, POST]
-
-cmanager_delete:
-    path:     /{id}/delete
-    defaults: { _controller: "XleCafeBundle:Cafe:delete" }
-    methods:  DELETE
-
 cmanager_register:
     path:     /register
     defaults: { _controller: "XleCafeBundle:Registration:register" }
