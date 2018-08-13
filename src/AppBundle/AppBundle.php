@@ -15,7 +15,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
  * This class is the one that transforms the src/AppBundle/ directory into a real
- * Symfony bundle.
+ * Symfony bundle .
  *
  * There are two types of bundles:
  *
